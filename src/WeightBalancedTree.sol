@@ -31,10 +31,7 @@ library WeightBalancedTree {
      * _weight is greater or equal to zero and smaller than weightSum
      * Returns the selected id. If _weight is equal or greater than weight sum returns 0.
      */
-    function select(
-        Tree storage tree,
-        uint256 _weight
-    ) public returns (uint256) {
+    function select(Tree storage tree, uint256 _weight) public returns (uint256) {
         uint256 probe = tree.root;
 
         while (true) {
@@ -51,11 +48,7 @@ library WeightBalancedTree {
                 if (tree.nodes[probe].weight - 1 == 0) {
                     remove(tree, tree.nodes[probe].id);
                 } else {
-                    update(
-                        tree,
-                        tree.nodes[probe].id,
-                        tree.nodes[probe].weight - 1
-                    );
+                    update(tree, tree.nodes[probe].id, tree.nodes[probe].weight - 1);
                 }
 
                 return temp;
@@ -121,8 +114,7 @@ library WeightBalancedTree {
                 promote(tree, tree.counter);
                 return;
             } else if (
-                tree.nodes[tree.nodes[probe].leftChild].weightSum >
-                tree.nodes[tree.nodes[probe].rightChild].weightSum
+                tree.nodes[tree.nodes[probe].leftChild].weightSum > tree.nodes[tree.nodes[probe].rightChild].weightSum
             ) {
                 probe = tree.nodes[probe].rightChild;
             } else {
@@ -132,28 +124,21 @@ library WeightBalancedTree {
     }
 
     function promote(Tree storage tree, uint256 probe) private {
-        while (
-            tree.nodes[probe].parent != 0 &&
-            tree.nodes[probe].weight >
-            tree.nodes[tree.nodes[probe].parent].weight
-        ) {
+        while (tree.nodes[probe].parent != 0 && tree.nodes[probe].weight > tree.nodes[tree.nodes[probe].parent].weight)
+        {
             uint256 temp = tree.nodes[probe].id;
             tree.nodes[probe].id = tree.nodes[tree.nodes[probe].parent].id;
             tree.nodes[tree.nodes[probe].parent].id = temp;
 
             temp = tree.nodes[probe].weight;
-            tree.nodes[probe].weight = tree
-                .nodes[tree.nodes[probe].parent]
-                .weight;
+            tree.nodes[probe].weight = tree.nodes[tree.nodes[probe].parent].weight;
             tree.nodes[tree.nodes[probe].parent].weight = temp;
 
             tree.nodes[probe].weightSum += tree.nodes[probe].weight;
             tree.nodes[probe].weightSum -= temp;
 
             tree.nodeMap[tree.nodes[probe].id] = probe;
-            tree.nodeMap[tree.nodes[tree.nodes[probe].parent].id] = tree
-                .nodes[probe]
-                .parent;
+            tree.nodeMap[tree.nodes[tree.nodes[probe].parent].id] = tree.nodes[probe].parent;
 
             probe = tree.nodes[probe].parent;
         }
@@ -176,9 +161,7 @@ library WeightBalancedTree {
         uint256 probe = node;
 
         while (tree.nodes[probe].parent != 0) {
-            tree.nodes[tree.nodes[probe].parent].weightSum -= tree
-                .nodes[node]
-                .weight;
+            tree.nodes[tree.nodes[probe].parent].weightSum -= tree.nodes[node].weight;
 
             probe = tree.nodes[probe].parent;
         }
@@ -204,63 +187,39 @@ library WeightBalancedTree {
 
                     return;
                 } else {
-                    tree.nodes[probe].id = tree
-                        .nodes[tree.nodes[probe].rightChild]
-                        .id;
+                    tree.nodes[probe].id = tree.nodes[tree.nodes[probe].rightChild].id;
                     tree.nodeMap[tree.nodes[probe].id] = probe;
 
-                    tree.nodes[probe].weight = tree
-                        .nodes[tree.nodes[probe].rightChild]
-                        .weight;
-                    tree.nodes[probe].weightSum = tree
-                        .nodes[tree.nodes[probe].rightChild]
-                        .weightSum;
+                    tree.nodes[probe].weight = tree.nodes[tree.nodes[probe].rightChild].weight;
+                    tree.nodes[probe].weightSum = tree.nodes[tree.nodes[probe].rightChild].weightSum;
 
                     probe = tree.nodes[probe].rightChild;
                 }
             } else if (tree.nodes[probe].rightChild == 0) {
-                tree.nodes[probe].id = tree
-                    .nodes[tree.nodes[probe].leftChild]
-                    .id;
+                tree.nodes[probe].id = tree.nodes[tree.nodes[probe].leftChild].id;
                 tree.nodeMap[tree.nodes[probe].id] = probe;
 
-                tree.nodes[probe].weight = tree
-                    .nodes[tree.nodes[probe].leftChild]
-                    .weight;
-                tree.nodes[probe].weightSum = tree
-                    .nodes[tree.nodes[probe].leftChild]
-                    .weightSum;
+                tree.nodes[probe].weight = tree.nodes[tree.nodes[probe].leftChild].weight;
+                tree.nodes[probe].weightSum = tree.nodes[tree.nodes[probe].leftChild].weightSum;
 
                 probe = tree.nodes[probe].leftChild;
-            } else if (
-                tree.nodes[tree.nodes[probe].leftChild].weight >
-                tree.nodes[tree.nodes[probe].rightChild].weight
-            ) {
-                tree.nodes[probe].id = tree
-                    .nodes[tree.nodes[probe].leftChild]
-                    .id;
+            } else if (tree.nodes[tree.nodes[probe].leftChild].weight > tree.nodes[tree.nodes[probe].rightChild].weight)
+            {
+                tree.nodes[probe].id = tree.nodes[tree.nodes[probe].leftChild].id;
                 tree.nodeMap[tree.nodes[probe].id] = probe;
 
-                tree.nodes[probe].weight = tree
-                    .nodes[tree.nodes[probe].leftChild]
-                    .weight;
-                tree.nodes[probe].weightSum =
-                    tree.nodes[tree.nodes[probe].leftChild].weightSum +
-                    tree.nodes[tree.nodes[probe].rightChild].weightSum;
+                tree.nodes[probe].weight = tree.nodes[tree.nodes[probe].leftChild].weight;
+                tree.nodes[probe].weightSum = tree.nodes[tree.nodes[probe].leftChild].weightSum
+                    + tree.nodes[tree.nodes[probe].rightChild].weightSum;
 
                 probe = tree.nodes[probe].leftChild;
             } else {
-                tree.nodes[probe].id = tree
-                    .nodes[tree.nodes[probe].rightChild]
-                    .id;
+                tree.nodes[probe].id = tree.nodes[tree.nodes[probe].rightChild].id;
                 tree.nodeMap[tree.nodes[probe].id] = probe;
 
-                tree.nodes[probe].weight = tree
-                    .nodes[tree.nodes[probe].rightChild]
-                    .weight;
-                tree.nodes[probe].weightSum =
-                    tree.nodes[tree.nodes[probe].leftChild].weightSum +
-                    tree.nodes[tree.nodes[probe].rightChild].weightSum;
+                tree.nodes[probe].weight = tree.nodes[tree.nodes[probe].rightChild].weight;
+                tree.nodes[probe].weightSum = tree.nodes[tree.nodes[probe].leftChild].weightSum
+                    + tree.nodes[tree.nodes[probe].rightChild].weightSum;
 
                 probe = tree.nodes[probe].rightChild;
             }
@@ -273,11 +232,7 @@ library WeightBalancedTree {
      * _weight the new weight to be assigned
      * Returns true if the weight is updated, false if the identifier doesn't exist.
      */
-    function update(
-        Tree storage tree,
-        uint256 _id,
-        uint256 _weight
-    ) internal returns (bool) {
+    function update(Tree storage tree, uint256 _id, uint256 _weight) internal returns (bool) {
         uint256 node = tree.nodeMap[_id];
 
         if (node == 0) {
@@ -314,133 +269,82 @@ library WeightBalancedTree {
             if (tree.nodes[probe].leftChild != 0) {
                 if (tree.nodes[probe].rightChild != 0) {
                     if (
-                        tree.nodes[tree.nodes[probe].leftChild].weight >
-                        tree.nodes[tree.nodes[probe].rightChild].weight
+                        tree.nodes[tree.nodes[probe].leftChild].weight > tree.nodes[tree.nodes[probe].rightChild].weight
                     ) {
-                        if (
-                            tree.nodes[tree.nodes[probe].leftChild].weight >
-                            tree.nodes[probe].weight
-                        ) {
+                        if (tree.nodes[tree.nodes[probe].leftChild].weight > tree.nodes[probe].weight) {
                             uint256 temp = tree.nodes[probe].id;
-                            tree.nodes[probe].id = tree
-                                .nodes[tree.nodes[probe].leftChild]
-                                .id;
+                            tree.nodes[probe].id = tree.nodes[tree.nodes[probe].leftChild].id;
                             tree.nodes[tree.nodes[probe].leftChild].id = temp;
 
                             temp = tree.nodes[probe].weight;
-                            tree.nodes[probe].weight = tree
-                                .nodes[tree.nodes[probe].leftChild]
-                                .weight;
-                            tree
-                                .nodes[tree.nodes[probe].leftChild]
-                                .weight = temp;
+                            tree.nodes[probe].weight = tree.nodes[tree.nodes[probe].leftChild].weight;
+                            tree.nodes[tree.nodes[probe].leftChild].weight = temp;
 
-                            tree
-                                .nodes[tree.nodes[probe].leftChild]
-                                .weightSum += temp;
-                            tree
-                                .nodes[tree.nodes[probe].leftChild]
-                                .weightSum -= tree.nodes[probe].weight;
+                            tree.nodes[tree.nodes[probe].leftChild].weightSum += temp;
+                            tree.nodes[tree.nodes[probe].leftChild].weightSum -= tree.nodes[probe].weight;
 
                             tree.nodeMap[tree.nodes[probe].id] = probe;
-                            tree.nodeMap[
-                                tree.nodes[tree.nodes[probe].leftChild].id
-                            ] = tree.nodes[probe].leftChild;
+                            tree.nodeMap[tree.nodes[tree.nodes[probe].leftChild].id] = tree.nodes[probe].leftChild;
 
                             probe = tree.nodes[probe].leftChild;
                             continue;
                         }
 
                         return;
-                    } else if (
-                        tree.nodes[tree.nodes[probe].rightChild].weight >
-                        tree.nodes[probe].weight
-                    ) {
+                    } else if (tree.nodes[tree.nodes[probe].rightChild].weight > tree.nodes[probe].weight) {
                         uint256 temp = tree.nodes[probe].id;
-                        tree.nodes[probe].id = tree
-                            .nodes[tree.nodes[probe].rightChild]
-                            .id;
+                        tree.nodes[probe].id = tree.nodes[tree.nodes[probe].rightChild].id;
                         tree.nodes[tree.nodes[probe].rightChild].id = temp;
 
                         temp = tree.nodes[probe].weight;
-                        tree.nodes[probe].weight = tree
-                            .nodes[tree.nodes[probe].rightChild]
-                            .weight;
+                        tree.nodes[probe].weight = tree.nodes[tree.nodes[probe].rightChild].weight;
                         tree.nodes[tree.nodes[probe].rightChild].weight = temp;
 
-                        tree
-                            .nodes[tree.nodes[probe].rightChild]
-                            .weightSum += temp;
-                        tree
-                            .nodes[tree.nodes[probe].rightChild]
-                            .weightSum -= tree.nodes[probe].weight;
+                        tree.nodes[tree.nodes[probe].rightChild].weightSum += temp;
+                        tree.nodes[tree.nodes[probe].rightChild].weightSum -= tree.nodes[probe].weight;
 
                         tree.nodeMap[tree.nodes[probe].id] = probe;
-                        tree.nodeMap[
-                            tree.nodes[tree.nodes[probe].rightChild].id
-                        ] = tree.nodes[probe].rightChild;
+                        tree.nodeMap[tree.nodes[tree.nodes[probe].rightChild].id] = tree.nodes[probe].rightChild;
 
                         probe = tree.nodes[probe].rightChild;
                         continue;
                     }
 
                     return;
-                } else if (
-                    tree.nodes[tree.nodes[probe].leftChild].weight >
-                    tree.nodes[probe].weight
-                ) {
+                } else if (tree.nodes[tree.nodes[probe].leftChild].weight > tree.nodes[probe].weight) {
                     uint256 temp = tree.nodes[probe].id;
-                    tree.nodes[probe].id = tree
-                        .nodes[tree.nodes[probe].leftChild]
-                        .id;
+                    tree.nodes[probe].id = tree.nodes[tree.nodes[probe].leftChild].id;
                     tree.nodes[tree.nodes[probe].leftChild].id = temp;
 
                     temp = tree.nodes[probe].weight;
-                    tree.nodes[probe].weight = tree
-                        .nodes[tree.nodes[probe].leftChild]
-                        .weight;
+                    tree.nodes[probe].weight = tree.nodes[tree.nodes[probe].leftChild].weight;
                     tree.nodes[tree.nodes[probe].leftChild].weight = temp;
 
                     tree.nodes[tree.nodes[probe].leftChild].weightSum += temp;
-                    tree.nodes[tree.nodes[probe].leftChild].weightSum -= tree
-                        .nodes[probe]
-                        .weight;
+                    tree.nodes[tree.nodes[probe].leftChild].weightSum -= tree.nodes[probe].weight;
 
                     tree.nodeMap[tree.nodes[probe].id] = probe;
-                    tree.nodeMap[
-                        tree.nodes[tree.nodes[probe].leftChild].id
-                    ] = tree.nodes[probe].leftChild;
+                    tree.nodeMap[tree.nodes[tree.nodes[probe].leftChild].id] = tree.nodes[probe].leftChild;
 
                     probe = tree.nodes[probe].leftChild;
                     continue;
                 }
 
                 return;
-            } else if (
-                tree.nodes[tree.nodes[probe].rightChild].weight >
-                tree.nodes[probe].weight
-            ) {
+            } else if (tree.nodes[tree.nodes[probe].rightChild].weight > tree.nodes[probe].weight) {
                 uint256 temp = tree.nodes[probe].id;
-                tree.nodes[probe].id = tree
-                    .nodes[tree.nodes[probe].rightChild]
-                    .id;
+                tree.nodes[probe].id = tree.nodes[tree.nodes[probe].rightChild].id;
                 tree.nodes[tree.nodes[probe].rightChild].id = temp;
 
                 temp = tree.nodes[probe].weight;
-                tree.nodes[probe].weight = tree
-                    .nodes[tree.nodes[probe].rightChild]
-                    .weight;
+                tree.nodes[probe].weight = tree.nodes[tree.nodes[probe].rightChild].weight;
                 tree.nodes[tree.nodes[probe].rightChild].weight = temp;
 
                 tree.nodes[tree.nodes[probe].rightChild].weightSum += temp;
-                tree.nodes[tree.nodes[probe].rightChild].weightSum -= tree
-                    .nodes[probe]
-                    .weight;
+                tree.nodes[tree.nodes[probe].rightChild].weightSum -= tree.nodes[probe].weight;
 
                 tree.nodeMap[tree.nodes[probe].id] = probe;
-                tree.nodeMap[tree.nodes[tree.nodes[probe].rightChild].id] = tree
-                    .nodes[probe]
-                    .rightChild;
+                tree.nodeMap[tree.nodes[tree.nodes[probe].rightChild].id] = tree.nodes[probe].rightChild;
 
                 probe = tree.nodes[probe].rightChild;
                 continue;

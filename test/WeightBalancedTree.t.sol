@@ -6,6 +6,7 @@ import "../src/WeightBalancedTree.sol";
 
 contract WeightBalancedTreeTest is Test {
     using WeightBalancedTree for WeightBalancedTree.Tree;
+
     WeightBalancedTree.Tree private tree;
 
     function setUp() public {
@@ -155,11 +156,8 @@ contract WeightBalancedTreeTest is Test {
         assertEq(tree.weightSum(), 0);
     }
 
-    function testFuzzMultipleOperations(
-        uint256[5] memory ids,
-        uint256[5] memory weights
-    ) public {
-        for (uint i = 0; i < 5; i++) {
+    function testFuzzMultipleOperations(uint256[5] memory ids, uint256[5] memory weights) public {
+        for (uint256 i = 0; i < 5; i++) {
             // Ensure unique IDs and reasonable weights
             ids[i] = bound(ids[i], i + 1, type(uint256).max);
             weights[i] = bound(weights[i], 0, type(uint256).max / 100);
@@ -172,7 +170,7 @@ contract WeightBalancedTreeTest is Test {
         }
 
         // Remove some nodes
-        for (uint i = 0; i < 3; i++) {
+        for (uint256 i = 0; i < 3; i++) {
             tree.remove(ids[i]);
         }
     }
